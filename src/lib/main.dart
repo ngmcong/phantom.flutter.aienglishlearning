@@ -270,7 +270,7 @@ class MainAppState extends State<MainApp> {
                     onPressed: () {
                       setState(() {
                         isAnswer = false;
-                        generateObjects();
+                        aiEnlighQuestions = generateObjects();
                       });
                     },
                     child: Text('Try a another test'),
