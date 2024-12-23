@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:aienglishlearning/dataentities.dart';
@@ -20,51 +21,70 @@ class MainAppState extends State<MainApp> {
   bool isAnswer = false;
   String statusString = "Loading";
   bool isInLoading = true;
+  List<String> questionValues = [];
 
-  Future<List<AIEnlighQuestion>> generateObjects({
-    String question =
-        "i have an object have fields such as: question, option 1 to 4, correctOptionIndex. create for me a list which have greater 10 questions fill in blank for learning english with that object struct as json string.",
-  }) async {
-    setState(() {
-      isInLoading = true;
-      statusString = "Loading...";
-    });
-    final response = await http.post(
-      Uri.parse(
-        'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyAm-hDGemRSA0RA0ZfeV4n3_a5OSRLYxTw',
-      ),
-      headers: <String, String>{'Content-Type': 'application/json'},
-      body: "{\"contents\": [{\"parts\":[{\"text\": \"$question\"}]}]}",
-    );
-    if (response.statusCode == 200) {
+  Future<List<AIEnlighQuestion>> generateObjects() async {
+    try {
       setState(() {
-        statusString = 'Load successfully.';
+        isInLoading = true;
+        statusString = "Loading...";
       });
-      var geminiResponse = GeminiResponse.fromJson(
-        jsonDecode(
-          response.body
-              .replaceFirst('```json', '')
-              .replaceAll('```', '')
-              .replaceAll('\n', ''),
+      String question =
+          "I have an object have fields such as: question, option 1 to 4, correctOptionIndex. Create for me a list which have greater 10 questions fill in blank for learning english with that object struct as json string.";
+      if (questionValues.isNotEmpty) {
+        question +=
+            " Remember that question must not in list [${questionValues.join(",")}].";
+      }
+      log(question);
+      final response = await http.post(
+        Uri.parse(
+          'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyAm-hDGemRSA0RA0ZfeV4n3_a5OSRLYxTw',
         ),
+        headers: <String, String>{'Content-Type': 'application/json'},
+        body: "{\"contents\": [{\"parts\":[{\"text\": \"$question\"}]}]}",
       );
-      setState(() {
-        statusString = 'Bulding UI.';
-      });
-      List listJson = jsonDecode(
-        geminiResponse.candidates!.first.content!.parts!.first.text!,
-      );
-      var listObject =
-          listJson.map((e) => AIEnlighQuestion.fromJson(e)).toList();
-      setState(() {
-        isInLoading = false;
-      });
-      return listObject;
-    } else {
+      if (response.statusCode == 200) {
+        setState(() {
+          statusString = 'Load successfully.';
+        });
+        var geminiResponse = GeminiResponse.fromJson(
+          jsonDecode(
+            response.body
+            // .replaceFirst('```json', '')
+            // .replaceAll('```', '')
+            .replaceAll('\n', ''),
+          ),
+        );
+        setState(() {
+          statusString = 'Bulding UI.';
+        });
+        var jsonString =
+            geminiResponse.candidates!.first.content!.parts!.first.text!;
+        jsonString = jsonString.replaceFirst('```json', '');
+        String jsonPattern = '```';
+        if (jsonString.lastIndexOf(jsonPattern) > 0) {
+          jsonString = jsonString.substring(
+            0,
+            jsonString.lastIndexOf(jsonPattern),
+          );
+        }
+        log(jsonString);
+        List listJson = jsonDecode(jsonString);
+        var listObject =
+            listJson.map((e) => AIEnlighQuestion.fromJson(e)).toList();
+        questionValues.addAll(listObject.map((e) => e.question!));
+        setState(() {
+          isInLoading = false;
+        });
+        return listObject;
+      } else {
+        throw Exception('Failed to generate objects.');
+      }
+    } catch (ex) {
       setState(() {
         statusString = 'Failed to generate objects.';
       });
-      throw Exception('Failed to generate objects.');
+      rethrow;
     }
   }
 
@@ -233,11 +253,7 @@ class MainAppState extends State<MainApp> {
               ),
               Visibility(
                 visible: isInLoading,
-                child: Row(
-                  children: [
-                    Text(statusString),
-                  ]
-                ),
+                child: Row(children: [Text(statusString)]),
               ),
               Row(
                 children: [
