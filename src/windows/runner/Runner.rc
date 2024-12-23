@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "phantom_flutter_aienglishlearning" "\0"
+            VALUE "FileDescription", "aienglishlearning" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "phantom_flutter_aienglishlearning" "\0"
+            VALUE "InternalName", "aienglishlearning" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "phantom_flutter_aienglishlearning.exe" "\0"
-            VALUE "ProductName", "phantom_flutter_aienglishlearning" "\0"
+            VALUE "OriginalFilename", "aienglishlearning.exe" "\0"
+            VALUE "ProductName", "aienglishlearning" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

@@ -1,6 +1,6 @@
 {
-    "name": "phantom_flutter_aienglishlearning",
-    "short_name": "phantom_flutter_aienglishlearning",
+    "name": "aienglishlearning",
+    "short_name": "aienglishlearning",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

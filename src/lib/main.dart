@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:phantom_flutter_aienglishlearning/dataentities.dart';
+import 'package:aienglishlearning/dataentities.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
