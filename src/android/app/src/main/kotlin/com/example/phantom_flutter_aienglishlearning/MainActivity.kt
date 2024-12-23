@@ -1,4 +1,4 @@
-package com.example.phantom_flutter_aienglishlearning
+package com.phantom.aienglishlearning
 
 import io.flutter.embedding.android.FlutterActivity
 

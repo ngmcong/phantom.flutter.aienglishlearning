@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "458751039846",
+    "project_id": "aienglishlearning-b6929",
+    "storage_bucket": "aienglishlearning-b6929.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:458751039846:android:8101993b6e4d7c10d150a7",
+        "android_client_info": {
+          "package_name": "com.phantom.aienglishlearning"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuzKXWTqpuyRxWj0jijkUTXC8qIaNUe0E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
