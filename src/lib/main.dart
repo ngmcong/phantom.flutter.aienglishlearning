@@ -72,7 +72,7 @@ class MainAppState extends State<MainApp> {
         List listJson = jsonDecode(jsonString);
         var listObject =
             listJson.map((e) => AIEnlighQuestion.fromJson(e)).toList();
-        questionValues.addAll(listObject.map((e) => e.question!));
+        questionValues.addAll(listObject.map((e) => "'${e.question!}'"));
         setState(() {
           isInLoading = false;
         });
