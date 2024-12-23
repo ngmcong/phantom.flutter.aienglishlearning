@@ -1,5 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:android_id/android_id.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:aienglishlearning/dataentities.dart';
 import 'package:http/http.dart' as http;
@@ -21,6 +24,18 @@ class MainAppState extends State<MainApp> {
   String statusString = "Loading";
   bool isInLoading = true;
   List<String> questionValues = [];
+  String? deviceId;
+
+  Future<String?> getDeviceId() async {
+    var deviceInfo = DeviceInfoPlugin();
+    if (Platform.isIOS) { // import 'dart:io'
+      var iosDeviceInfo = await deviceInfo.iosInfo;
+      return iosDeviceInfo.identifierForVendor; // unique ID on iOS
+    } else if(Platform.isAndroid) {
+      return AndroidId().getId();
+    }
+    return null;
+  }
 
   Future<List<AIEnlighQuestion>> generateObjects() async {
     try {
@@ -34,12 +49,16 @@ class MainAppState extends State<MainApp> {
         question +=
             " Remember that question must not in list [${questionValues.join(",")}].";
       }
+      deviceId ??= await getDeviceId();
       final response = await http.post(
         Uri.parse(
-          'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyAm-hDGemRSA0RA0ZfeV4n3_a5OSRLYxTw',
+          'https://www.vuonmamoi.somee.com/Admin/GeminiQuestion',
         ),
-        headers: <String, String>{'Content-Type': 'application/json'},
-        body: "{\"contents\": [{\"parts\":[{\"text\": \"$question\"}]}]}",
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'DeviceID': '$deviceId',
+        },
+        body: jsonEncode(question),
       );
       if (response.statusCode == 200) {
         setState(() {
