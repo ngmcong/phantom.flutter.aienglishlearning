@@ -18,11 +18,17 @@ class MainApp extends StatefulWidget {
 class MainAppState extends State<MainApp> {
   late Future<List<AIEnlighQuestion>> aiEnlighQuestions;
   bool isAnswer = false;
+  String statusString = "Loading";
+  bool isInLoading = true;
 
   Future<List<AIEnlighQuestion>> generateObjects({
     String question =
         "i have an object have fields such as: question, option 1 to 4, correctOptionIndex. create for me a list which have greater 10 questions fill in blank for learning english with that object struct as json string.",
   }) async {
+    setState(() {
+      isInLoading = true;
+      statusString = "Loading...";
+    });
     final response = await http.post(
       Uri.parse(
         'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyAm-hDGemRSA0RA0ZfeV4n3_a5OSRLYxTw',
@@ -31,6 +37,9 @@ class MainAppState extends State<MainApp> {
       body: "{\"contents\": [{\"parts\":[{\"text\": \"$question\"}]}]}",
     );
     if (response.statusCode == 200) {
+      setState(() {
+        statusString = 'Load successfully.';
+      });
       var geminiResponse = GeminiResponse.fromJson(
         jsonDecode(
           response.body
@@ -39,13 +48,22 @@ class MainAppState extends State<MainApp> {
               .replaceAll('\n', ''),
         ),
       );
+      setState(() {
+        statusString = 'Bulding UI.';
+      });
       List listJson = jsonDecode(
         geminiResponse.candidates!.first.content!.parts!.first.text!,
       );
       var listObject =
           listJson.map((e) => AIEnlighQuestion.fromJson(e)).toList();
+      setState(() {
+        isInLoading = false;
+      });
       return listObject;
     } else {
+      setState(() {
+        statusString = 'Failed to generate objects.';
+      });
       throw Exception('Failed to generate objects.');
     }
   }
@@ -211,6 +229,14 @@ class MainAppState extends State<MainApp> {
                       }
                     },
                   ),
+                ),
+              ),
+              Visibility(
+                visible: isInLoading,
+                child: Row(
+                  children: [
+                    Text(statusString),
+                  ]
                 ),
               ),
               Row(
