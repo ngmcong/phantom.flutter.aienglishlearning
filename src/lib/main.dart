@@ -254,7 +254,7 @@ class MainAppState extends State<MainApp> {
                     onPressed: () {
                       setState(() {
                         isAnswer = false;
-                        generateObjects(question: "make another");
+                        generateObjects();
                       });
                     },
                     child: Text('Try a another test'),
